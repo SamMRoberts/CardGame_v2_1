@@ -29,7 +29,7 @@ namespace SamMRoberts.CardGame.Management
             _game.Start();
             //Task.Factory.StartNew(Test);
             Task process = Task.Factory.StartNew(Process);
-            //_console.Start();  // Not implemented yet
+            _console.Start();
             process.Wait();
         }
 
