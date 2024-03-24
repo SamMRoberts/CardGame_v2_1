@@ -4,6 +4,6 @@ namespace SamMRoberts.CardGame.Cards
         where TFace : Enum
         where TSuit : Enum
     {
-        Deck<Card> BuildDeck();
+        IDeck<Card> BuildDeck();
     }
 }

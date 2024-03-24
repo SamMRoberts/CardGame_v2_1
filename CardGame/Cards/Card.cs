@@ -17,30 +17,15 @@
 
         public int CompareTo(Card other)
         {
-            if ((int)(object)this.Face > (int)(object)other.Face)
-            {
-                return 1;
-            }
-            else if ((int)(object)this.Face < (int)(object)other.Face)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
+            if ((int)(object)this.Face > (int)(object)other.Face) return 1;
+            else if ((int)(object)this.Face < (int)(object)other.Face) return -1;
+            else return 0;
         }
 
         public bool Equals(Card other)
         {
-            if (((int)(object)this.Face == (int)(object)other.Face) && ((int)(object)this.Suit == (int)(object)other.Suit))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            if (((int)(object)this.Face == (int)(object)other.Face) && ((int)(object)this.Suit == (int)(object)other.Suit)) return true;
+            else return false;
         }
 
         public override string ToString() => $"{FaceSymbol}{SuitSymbol}";

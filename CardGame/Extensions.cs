@@ -8,10 +8,7 @@ namespace SamMRoberts.CardGame.Extensions
         public static bool IsPropertyReadOnly<T>(string PropertyName)
         {
             MemberInfo info = typeof(T).GetMember(PropertyName)[0];
-
-            ReadOnlyAttribute? attribute = Attribute.GetCustomAttribute(info, typeof(ReadOnlyAttribute)) as ReadOnlyAttribute;
-
-            return (attribute != null && attribute.IsReadOnly);
+            return Attribute.GetCustomAttribute(info, typeof(ReadOnlyAttribute)) is ReadOnlyAttribute attribute && attribute.IsReadOnly;
         }
     }
 }

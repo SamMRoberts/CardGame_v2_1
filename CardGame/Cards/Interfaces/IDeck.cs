@@ -9,5 +9,7 @@ namespace SamMRoberts.CardGame.Cards
         T GetBottum();
         T GetRandom();
         void Clear();
+        int Count { get; }
+        public T this[int i] { get; set; }
     }
 }

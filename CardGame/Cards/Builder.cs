@@ -4,9 +4,9 @@ namespace SamMRoberts.CardGame.Cards
         where TFace : Enum
         where TSuit : Enum
     {
-        public Deck<Card> BuildDeck()
+        public IDeck<Card> BuildDeck()
         {
-            Deck<Card> deck = new();
+            IDeck<Card> deck = new Deck<Card>();
 
             foreach (TFace face in Enum.GetValues(typeof(TFace)))
             {

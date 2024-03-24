@@ -2,7 +2,7 @@ using System.Collections;
 
 namespace SamMRoberts.CardGame.Cards
 {
-    public class Deck<T>(int deckSize = 52) : IEnumerable<T>
+    public class Deck<T>(int deckSize = 52) : IDeck<T>, IEnumerable<T>
     {
         private readonly T[] cards = new T[deckSize];
         private int nextIndex = 0;
@@ -37,7 +37,7 @@ namespace SamMRoberts.CardGame.Cards
 
         public void Clear()
         {
-            Array.Fill(cards, default(T));
+            Array.Fill(cards, default!);
             nextIndex = 0;
         }
 
