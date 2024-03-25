@@ -2,6 +2,7 @@ namespace SamMRoberts.CardGame.Games
 {
     public interface IGame
     {
+        public IPlayer Player { get; }
         public Cards.IDeck<Cards.Card> Deck { get; }
         void Start();
         void Restart();

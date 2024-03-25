@@ -11,15 +11,17 @@ namespace SamMRoberts.CardGame.Cards
 
     public interface IHand<T> : IEnumerable<T>
     {
-        void AddFirst(T value);
+        void Clear();
+        bool Contains(T item);
         void AddLast(T value);
+        #if _sortable
+        void AddFirst(T value);
         void AddRandom(T value);
         T GetFirst();
         T GetLast();
         T GetRandom();
         T Get(T value);
         void Sort(HandSort primarySort, HandSort secondarySort = HandSort.None);
-        void Clear();
-        bool Contains(T item);
+        #endif
     }
 }

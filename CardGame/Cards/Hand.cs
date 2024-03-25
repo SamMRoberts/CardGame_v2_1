@@ -2,10 +2,17 @@ using System.Collections;
 
 namespace SamMRoberts.CardGame.Cards
 {
-    public class Hand<T>(int maxSize = 52) : IHand<T>
+    public class Hand<T> : IHand<T>
     {
-        private T[] cards = new T[maxSize];
+        private bool _sortable;
+        private T[] cards;
         private int nextIndex = 0;
+
+        public Hand(bool sortable = false, int maxSize = 52)
+        {
+            _sortable = sortable;
+            cards = new T[maxSize];
+        }
 
         public T this[int i]
         {
@@ -15,12 +22,14 @@ namespace SamMRoberts.CardGame.Cards
 
         public int Count => nextIndex;
 
+        #if _sortable
         public void AddFirst(T value)
         {
             if (nextIndex >= cards.Length)
                 throw new IndexOutOfRangeException($"The collection can hold only {cards.Length} elements.");
             cards[nextIndex++] = value;
         }
+        #endif
 
         public void AddLast(T value)
         {
@@ -91,6 +100,7 @@ namespace SamMRoberts.CardGame.Cards
             nextIndex--;
         }
 
+        #if _sortable
         public void AddRandom(T value)
         {
             var random = new Random((int)DateTime.Now.Ticks);
@@ -117,6 +127,7 @@ namespace SamMRoberts.CardGame.Cards
         {
             throw new NotImplementedException();
         }
+        #endif
 
         private T Get(int index)
         {

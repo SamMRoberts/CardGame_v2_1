@@ -21,22 +21,22 @@ namespace SamMRoberts.CardGame.Games
         {
             for (int i = 0; i < count; i++)
             {
-                //player.Hand.Add(deck.Draw());
+                player.Hand.AddLast(deck.GetTop());
             }
         }
 
         public void Deal(Cards.IDeck<Cards.Card> deck, IPlayer player)
         {
-            //player.Hand.Add(deck.Draw());
+            player.Hand.AddLast(deck.GetTop());
         }
 
         public void Deal(Cards.IDeck<Cards.Card> deck, int count)
         {
             for (int i = 0; i < count; i++)
             {
-                //foreach (IPlayer player in Game.Players)
+                //foreach (IPlayer player in Game.Player)
                 //{
-                    //player.Hand.Add(deck.Draw());
+                    //player.Hand.AddLast(deck.GetTop());
                 //}
             }
         }

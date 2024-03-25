@@ -51,7 +51,7 @@ namespace SamMRoberts.CardGame.Management
             {
                 if (_queue.TryTake(out ICommand? command))
                 {
-                    command?.Execute();
+                    Task.Factory.StartNew(() => command.Execute());
                 }
                 Thread.Sleep(100);
             }
