@@ -88,11 +88,11 @@ namespace SamMRoberts.CardGame.Cards
             if (cards == null)
                 throw new NullReferenceException("The collection is empty.");
             var temp = cards[index];
-            for (int i = index; i < nextIndex; i++)
+            for (int i = index; i < nextIndex - 1; i++)
             {
                 cards[i] = cards[i + 1];
             }
-            cards[nextIndex] = default!;
+            cards[index] = default!;
             nextIndex--;
             return temp;
         }

@@ -21,7 +21,8 @@ namespace SamMRoberts.CardGame.Games
         {
             for (int i = 0; i < count; i++)
             {
-                player.Hand.AddLast(deck.GetTop());
+                var card = deck.GetTop();
+                player.Hand.AddLast(card);
             }
         }
 

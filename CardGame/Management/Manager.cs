@@ -25,7 +25,7 @@ namespace SamMRoberts.CardGame.Management
         public void Start()
         {
             _console.Handler.LoadExternalCommands(Games.BlackjackCommands.GetCommands());
-            _game = new Games.Blackjack(_console, new Components.ConsoleHandler(this));
+            _game = new Games.Blackjack(_console, new Components.ConsoleHandler(this), this);
             _game.Start();
             //Task.Factory.StartNew(Test);
             Task process = Task.Factory.StartNew(Process);

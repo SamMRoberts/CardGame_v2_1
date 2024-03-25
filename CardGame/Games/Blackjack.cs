@@ -12,14 +12,11 @@ namespace SamMRoberts.CardGame.Games
             {
                 { "hit", new Command(() => System.Console.WriteLine("Hit!")) },
                 { "stand", new Command(() => System.Console.WriteLine("Stand!")) },
-                //{ "double", new Command(() => System.Console.WriteLine("Double!")) },
-                //{ "split", new Command(() => System.Console.WriteLine("Split!")) },
-                //{ "surrender", new Command(() => System.Console.WriteLine("Surrender!")) }
             };
         }
     }
 
-    public class Blackjack : IGame
+    public class Blackjack : IGame, IQueueable
     {
         public IPlayer Player { get => _player; }
         private IDeck<Card> _deck;
@@ -28,10 +25,12 @@ namespace SamMRoberts.CardGame.Games
         private Components.IInteractiveConsole _console;
         private IHandler<string> _handler;
         private IDeckBuilder<Standard.Faces, Standard.Suits> _builder;
+        private IQueue _queue;
+
 
         public IDeck<Card> Deck { get => _deck; }
 
-        public Blackjack(Components.IInteractiveConsole console, IHandler<string> handler)
+        public Blackjack(Components.IInteractiveConsole console, IHandler<string> handler, IQueue queue)
         {
             _builder = new Builder<Standard.Faces, Standard.Suits>();
             _deck = _builder.BuildDeck();
@@ -39,27 +38,18 @@ namespace SamMRoberts.CardGame.Games
             _dealer = new Games.Dealer("Dealer", this);
             _console = console;
             _handler = handler;
+            _queue = queue;
             Welcome();
         }
 
         public void Start()
         {
-            // TODO: Add logic to send to queue
-            Task.Factory.StartNew(() => _dealer.GetAndShuffle());
-            Task.Factory.StartNew(() =>  _dealer.Deal(_deck, _player, 2));
-            Task.Factory.StartNew(() =>  _dealer.Deal(_deck, _dealer, 2));
-            _console.WriteLine("Player hand: " + _player.Hand[0] + _player.Hand[1].FaceSymbol + ":" + _player.Hand[1].SuitSymbol);
-            _console.WriteLine("Dealer hand: " + _dealer.Hand[0] + _dealer.Hand[1].ToString);
+            Send(new Command(() => _dealer.GetAndShuffle()));
+            Send(new Command(() => _dealer.Deal(_deck, _player, 2)));
+            Send(new Command(() => _dealer.Deal(_deck, _dealer, 2)));
+            Send(new Command(() => _console.WriteLine($"Player hand: {_player.Hand[0]} {_player.Hand[1]}")));
+            Send(new Command(() => _console.WriteLine($"Dealer hand: {_dealer.Hand[0]} {_dealer.Hand[1]}")));
 
-            /*
-            _deck.Shuffle();
-            _player.Hand.Add(_deck.Draw());
-            _dealer.Hand.Add(_deck.Draw());
-            _player.Hand.Add(_deck.Draw());
-            _dealer.Hand.Add(_deck.Draw());
-            */
-            //_console.WriteLine("Player hand: " + _player.Hand);
-            //_console.WriteLine("Dealer hand: " + _dealer.Hand);
             //_handler.Start();  // Not implemented yet
         }
 
@@ -86,7 +76,12 @@ namespace SamMRoberts.CardGame.Games
         private void Welcome()
         {
             System.Console.Clear();
-            _console.WriteLine("Welcome to Blackjack!\n");;
+            _console.WriteLine("Welcome to Blackjack!\n");
+        }
+
+        public void Send(ICommand command)
+        {
+            _queue.Enqueue(command);
         }
     }
 }
