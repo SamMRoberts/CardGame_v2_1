@@ -5,6 +5,6 @@ namespace SamMRoberts.CardGame.Games
         IGame Game { get; }
         string Name { get; set; }
         int Score { get; set; }
-        Cards.Hand<Cards.Card> Hand { get; set; }
+        Cards.Hand<Cards.CardHolder> Hand { get; set; }
     }
 }

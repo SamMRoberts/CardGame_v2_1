@@ -3,6 +3,7 @@ using System.Collections;
 namespace SamMRoberts.CardGame.Cards
 {
     public class Hand<T> : IHand<T>
+        where T : ICardHolder
     {
         private bool _sortable;
         private T[] cards;

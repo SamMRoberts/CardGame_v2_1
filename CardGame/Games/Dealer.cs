@@ -7,7 +7,7 @@ namespace SamMRoberts.CardGame.Games
         public IGame Game { get; }
         public string Name { get; set; }
         public int Score { get; set; }
-        public Cards.Hand<Cards.Card> Hand { get; set; }
+        public Cards.Hand<Cards.CardHolder> Hand { get; set; }
 
         public Dealer(string name, IGame game)
         {
@@ -21,14 +21,13 @@ namespace SamMRoberts.CardGame.Games
         {
             for (int i = 0; i < count; i++)
             {
-                var card = deck.GetTop();
-                player.Hand.AddLast(card);
+                Deal(deck, player, Cards.CardHolder.Visibility.VisibleToOwner);
             }
         }
 
-        public void Deal(Cards.IDeck<Cards.Card> deck, IPlayer player)
+        public void Deal(Cards.IDeck<Cards.Card> deck, IPlayer player, Cards.CardHolder.Visibility visibility)
         {
-            player.Hand.AddLast(deck.GetTop());
+            player.Hand.AddLast(new CardHolder(deck.GetTop(), visibility));
         }
 
         public void Deal(Cards.IDeck<Cards.Card> deck, int count)

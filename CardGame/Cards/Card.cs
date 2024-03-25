@@ -10,10 +10,10 @@
             SuitSymbol = Convert.ToChar(suit);
         }
 
-        public readonly Enum Face { get; }
-        public readonly string FaceSymbol { get; }
-        public readonly Enum Suit { get; }
-        public readonly char SuitSymbol { get; }
+        public readonly Enum Face;
+        public readonly string FaceSymbol;
+        public readonly Enum Suit;
+        public readonly char SuitSymbol;
 
         public int CompareTo(Card other)
         {
