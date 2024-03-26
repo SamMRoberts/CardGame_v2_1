@@ -2,15 +2,12 @@ using SamMRoberts.CardGame.Management;
 
 namespace SamMRoberts.CardGame.Components
 {
-    public class Console : IInteractiveConsole
+    public class Console : Component, IInteractiveConsole
     {
-        private object _inputLock = new object();
-        private IHandler<string> _handler;
-        public IHandler<string> Handler => _handler;
-
-        public Console(IQueue queue)
+        public Console(IQueue queue, IMediator mediator) : base(mediator)
         {
-            _handler = new ConsoleHandler(queue);
+            _mediator = mediator;
+            _mediator.Register(this);
         }
 
         public void Write(string message)
@@ -39,12 +36,12 @@ namespace SamMRoberts.CardGame.Components
             listener.Wait();
         }
 
-        private string GetTimestamp()
+        private static string GetTimestamp()
         {
             return DateTime.Now.ToString("HH:mm:ss.ffff");
         }
 
-        private string FormatMessage(string message)
+        private static string FormatMessage(string message)
         {
             return $"[{GetTimestamp()}] {message}";
         }
@@ -57,7 +54,6 @@ namespace SamMRoberts.CardGame.Components
             input = await ReadLineAsync();
                 if (input != null)
                 {
-                    //ICommand command = CreateCommand(() => WriteLine($"Your input was: {input}"));
                     HandleInput(input);
                 }
             } while (true);
@@ -70,7 +66,7 @@ namespace SamMRoberts.CardGame.Components
 
         private void HandleInput(string input)
         {
-            _handler.Handle(input);
+            _mediator.Notify(this, input);
         }
     }
 }

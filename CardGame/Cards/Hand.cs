@@ -28,7 +28,12 @@ namespace SamMRoberts.CardGame.Cards
         {
             if (nextIndex >= cards.Length)
                 throw new IndexOutOfRangeException($"The collection can hold only {cards.Length} elements.");
-            cards[nextIndex++] = value;
+            for (int i = nextIndex; i > 0; i--)
+            {
+                cards[i] = cards[i - 1];
+            }
+            cards[0] = value;
+            nextIndex++;
         }
         #endif
 
@@ -36,12 +41,7 @@ namespace SamMRoberts.CardGame.Cards
         {
             if (nextIndex >= cards.Length)
                 throw new IndexOutOfRangeException($"The collection can hold only {cards.Length} elements.");
-            for (int i = nextIndex; i > 0; i--)
-            {
-                cards[i] = cards[i - 1];
-            }
-            cards[0] = value;
-            nextIndex++;
+            cards[nextIndex++] = value;
         }
 
         public void Clear()

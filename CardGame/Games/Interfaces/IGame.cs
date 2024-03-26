@@ -1,6 +1,6 @@
 namespace SamMRoberts.CardGame.Games
 {
-    public interface IGame
+    public interface IGame : Components.IComponent
     {
         public IPlayer Player { get; }
         public Cards.IDeck<Cards.Card> Deck { get; }

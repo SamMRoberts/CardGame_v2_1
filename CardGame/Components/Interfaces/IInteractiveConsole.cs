@@ -5,6 +5,7 @@ namespace SamMRoberts.CardGame.Components
 {
     public interface IInteractiveConsole : IWriter, IAsyncReader<string>, IComponent
     {
-        public IHandler<string> Handler { get; }
+        //public IHandler<string> Handler { get; }
+        void Start();
     }
 }

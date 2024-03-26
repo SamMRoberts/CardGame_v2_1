@@ -1,19 +1,24 @@
 using System.Collections.Concurrent;
+using System.Reflection;
 using SamMRoberts.CardGame.Components;
 
 namespace SamMRoberts.CardGame.Management
 {
-    public class Manager : IManager, IQueue
+    public class Manager : Component, IManager, IQueue, ILogger
     {
         private static Manager? _instance;
         private BlockingCollection<ICommand> _queue;
         private IInteractiveConsole _console;
         private Games.IGame _game;
+        private Dictionary<DateTime, string> _log;
 
         public Manager()
         {
+            _log = new Dictionary<DateTime, string>();
+            _mediator = new Mediator(this);
+            _mediator.Register(this);
             _queue = [];
-            _console = new Components.Console(this);
+            _console = new Components.Console(this, _mediator);
             Start();
         }
 
@@ -24,8 +29,7 @@ namespace SamMRoberts.CardGame.Management
 
         public void Start()
         {
-            _console.Handler.LoadExternalCommands(Games.BlackjackCommands.GetCommands());
-            _game = new Games.Blackjack(_console, new Components.ConsoleHandler(this), this);
+            _game = new Games.Blackjack(_console, new Components.ConsoleHandler(_mediator, this), this, _mediator);
             _game.Start();
             //Task.Factory.StartNew(Test);
             Task process = Task.Factory.StartNew(Process);
@@ -56,6 +60,22 @@ namespace SamMRoberts.CardGame.Management
                 Thread.Sleep(100);
             }
         }
+
+        public void ShowLog()
+        {
+            foreach (KeyValuePair<DateTime, string> entry in _log)
+            {
+                System.Console.WriteLine($">[{entry.Key.ToString("HH:mm:ss.ffff")}]: {entry.Value}");
+            }
+        }
+
+        public void Log(string message)
+        {
+            if (message == null)
+                return;
+            _log.Add(DateTime.Now, message);
+        }
+
 
         private void Test()
         {

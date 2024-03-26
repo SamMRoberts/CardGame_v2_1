@@ -16,7 +16,7 @@ namespace SamMRoberts.CardGame.Games
         }
     }
 
-    public class Blackjack : IGame, IQueueable
+    public class Blackjack : Components.Component, IGame, IQueueable
     {
         public IPlayer Player { get => _player; }
         private IDeck<Card> _deck;
@@ -30,8 +30,10 @@ namespace SamMRoberts.CardGame.Games
 
         public IDeck<Card> Deck { get => _deck; }
 
-        public Blackjack(Components.IInteractiveConsole console, IHandler<string> handler, IQueue queue)
+        public Blackjack(Components.IInteractiveConsole console, IHandler<string> handler, IQueue queue, IMediator mediator) : base(mediator)
         {
+            _mediator = mediator;
+            _mediator.Register(this);
             _builder = new Builder<Standard.Faces, Standard.Suits>();
             _deck = _builder.BuildDeck();
             _player = new Games.Player("Player 1", this);
@@ -44,13 +46,10 @@ namespace SamMRoberts.CardGame.Games
 
         public void Start()
         {
-            Send(new Command(() => _dealer.GetAndShuffle()));
-            Send(new Command(() => _dealer.Deal(_deck, _player, 2)));
-            Send(new Command(() => _dealer.Deal(_deck, _dealer, 2)));
-            Send(new Command(() => _console.WriteLine($"Player hand: {_player.Hand[0]} {_player.Hand[1]}")));
-            Send(new Command(() => _console.WriteLine($"Dealer hand: {_dealer.Hand[0]} {_dealer.Hand[1]}")));
-
-            //_handler.Start();  // Not implemented yet
+            _dealer.GetAndShuffle();
+            InitialDeal();
+            _console.WriteLine($"Player hand: {_player.Hand[0]} {_player.Hand[1]}");
+            _console.WriteLine($"Dealer hand: {_dealer.Hand[0]} {_dealer.Hand[1]}");
         }
 
         public void Restart()
@@ -77,11 +76,31 @@ namespace SamMRoberts.CardGame.Games
         {
             System.Console.Clear();
             _console.WriteLine("Welcome to Blackjack!\n");
+            _console.WriteLine("Commands: /help, /exit, /showlog, /hit, /stand\n");
+        }
+
+        private void WriteHand(IPlayer player)
+        {
+            _console.Write($"{player.Name} hand:");
+
+            for (int i = 0; i < player.Hand.Count; i++)
+            {
+                _console.Write(player.Hand[i].ToString());
+            }
+
         }
 
         public void Send(ICommand command)
         {
             _queue.Enqueue(command);
+        }
+
+        private void InitialDeal()
+        {
+            _dealer.Deal(_deck, _player, CardHolder.Visibility.FaceUp);
+            _dealer.Deal(_deck, _dealer, CardHolder.Visibility.FaceDown);
+            _dealer.Deal(_deck, _player, CardHolder.Visibility.FaceUp);
+            _dealer.Deal(_deck, _dealer, CardHolder.Visibility.FaceUp);
         }
     }
 }

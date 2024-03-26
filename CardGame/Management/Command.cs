@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Windows.Input;
 
 namespace SamMRoberts.CardGame.Management
@@ -5,6 +6,7 @@ namespace SamMRoberts.CardGame.Management
     public class Command : ICommand
     {
         private readonly Action task;
+        public Action Action => task;
         public Command(Action task)
         {
             this.task = task;
@@ -17,7 +19,7 @@ namespace SamMRoberts.CardGame.Management
 
         public override string ToString()
         {
-            return task.Method.Name;
+            return task.Target.ToString() + "." + task.GetMethodInfo().Name;
         }
     }
 }
