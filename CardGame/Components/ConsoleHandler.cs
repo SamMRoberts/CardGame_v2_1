@@ -7,10 +7,9 @@ namespace SamMRoberts.CardGame.Components
         private Dictionary<string, ICommand> _commands;
         private ILogger _logger;
 
-        public ConsoleHandler(IMediator mediator, ILogger logger) : base(mediator)
+        public ConsoleHandler(string name, ILogger logger) : base(name)
         {
-            _mediator = mediator;
-            _mediator.Register(this);
+            Name = name;
             _logger = logger;
             _commands = new Dictionary<string, ICommand>();
             LoadCommands();
@@ -28,7 +27,7 @@ namespace SamMRoberts.CardGame.Components
                 string command = (parts[0][1..]).ToLower();
                 if (_commands.TryGetValue(command, out ICommand? value))
                 {
-                    _mediator.Notify(this, value);
+                    Mediator.Send(this, value);
                 }
                 else
                 {
@@ -37,14 +36,19 @@ namespace SamMRoberts.CardGame.Components
             }
             else
             {
-                _mediator.Notify(this, new Command(() => System.Console.WriteLine("You think to yourself, \"" + input + "\"")));
+                Mediator.Send(this, new Command(() => System.Console.WriteLine("You think to yourself, \"" + input + "\"")));
             }
         }
 
-        public void Send(ICommand command)
+        public override void Send(ICommand command)
         {
             ArgumentNullException.ThrowIfNull(command);
-            _mediator.Notify(this, command);
+            System.Diagnostics.Debug.WriteLine(this.Name + ": Sending command <not doing anything>.");
+        }
+
+        public override void Receive(ICommand command)
+        {
+            System.Diagnostics.Debug.WriteLine(this.Name + ": Received command <not doing anything>.");
         }
 
         public void Start()

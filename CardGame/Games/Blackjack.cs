@@ -30,10 +30,10 @@ namespace SamMRoberts.CardGame.Games
 
         public IDeck<Card> Deck { get => _deck; }
 
-        public Blackjack(Components.IInteractiveConsole console, IHandler<string> handler, IQueue queue, IMediator mediator) : base(mediator)
+        public Blackjack(string name, Components.IInteractiveConsole console, IHandler<string> handler, IQueue queue) : base(name)
         {
-            _mediator = mediator;
-            _mediator.Register(this);
+            Name = name;
+            //Mediator.Register(this);
             _builder = new Builder<Standard.Faces, Standard.Suits>();
             _deck = _builder.BuildDeck();
             _player = new Games.Player("Player 1", this);
@@ -90,9 +90,10 @@ namespace SamMRoberts.CardGame.Games
 
         }
 
-        public void Send(ICommand command)
+        public override void Send(ICommand command)
         {
-            _queue.Enqueue(command);
+            System.Diagnostics.Debug.WriteLine(this.Name + ": Sending command.");
+            //_queue.Enqueue(command);
         }
 
         private void InitialDeal()
@@ -101,6 +102,11 @@ namespace SamMRoberts.CardGame.Games
             _dealer.Deal(_deck, _dealer, CardHolder.Visibility.FaceDown);
             _dealer.Deal(_deck, _player, CardHolder.Visibility.FaceUp);
             _dealer.Deal(_deck, _dealer, CardHolder.Visibility.FaceUp);
+        }
+
+        public override void Receive(ICommand command)
+        {
+            System.Diagnostics.Debug.WriteLine(this.Name + ": Received command.");
         }
     }
 }

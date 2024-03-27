@@ -2,8 +2,8 @@ namespace SamMRoberts.CardGame.Management
 {
     public interface IMediator
     {
-        public void Notify(object sender, ICommand command);
-        void Notify(object sender, string ev);
+        public void Send(Components.IComponent component, ICommand command);
+        void Send(Components.IComponent component, string ev);
         void Register(Components.IComponent component);
     }
 }

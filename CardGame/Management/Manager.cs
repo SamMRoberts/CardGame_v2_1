@@ -10,15 +10,17 @@ namespace SamMRoberts.CardGame.Management
         private BlockingCollection<ICommand> _queue;
         private IInteractiveConsole _console;
         private Games.IGame _game;
+        private IHandler<string> _handler;
         private Dictionary<DateTime, string> _log;
 
-        public Manager()
+        public Manager(string name = "Manager") : base(name)
         {
+            Name = name;
             _log = new Dictionary<DateTime, string>();
-            _mediator = new Mediator(this);
-            _mediator.Register(this);
+            Mediator = new Mediator();
+            Mediator.Register(this);
             _queue = [];
-            _console = new Components.Console(this, _mediator);
+            _console = CreateAndRegisterComponent<Components.Console>("Console", this);
             Start();
         }
 
@@ -29,9 +31,9 @@ namespace SamMRoberts.CardGame.Management
 
         public void Start()
         {
-            _game = new Games.Blackjack(_console, new Components.ConsoleHandler(_mediator, this), this, _mediator);
+            _handler = CreateAndRegisterComponent<Components.ConsoleHandler>(["ConsoleHandler", this]);
+            _game = CreateAndRegisterComponent<Games.Blackjack>(["Blackjack", _console, _handler, this]);
             _game.Start();
-            //Task.Factory.StartNew(Test);
             Task process = Task.Factory.StartNew(Process);
             _console.Start();
             process.Wait();
@@ -87,6 +89,25 @@ namespace SamMRoberts.CardGame.Management
                 i++;
                 Thread.Sleep(1000);
             } while (true);
+        }
+
+        public override void Send(ICommand command)
+        {
+            System.Diagnostics.Debug.WriteLine(this.Name + ": Sending command.");
+        }
+
+        public override void Receive(ICommand command)
+        {
+            //System.Diagnostics.Debug.WriteLine(this.Name + ": Received command.");
+            Enqueue(command);
+        }
+
+        private T CreateAndRegisterComponent<T>(params object[] args) where T : Component
+        {
+            T component = (T)Activator.CreateInstance(typeof(T), args);
+
+            Mediator.Register(component);
+            return component;
         }
     }
 }

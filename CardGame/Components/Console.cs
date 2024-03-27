@@ -4,10 +4,10 @@ namespace SamMRoberts.CardGame.Components
 {
     public class Console : Component, IInteractiveConsole
     {
-        public Console(IQueue queue, IMediator mediator) : base(mediator)
+        public Console(string name, IQueue queue) : base(name)
         {
-            _mediator = mediator;
-            _mediator.Register(this);
+            Name = name;
+            //Mediator.Register(this);
         }
 
         public void Write(string message)
@@ -66,7 +66,17 @@ namespace SamMRoberts.CardGame.Components
 
         private void HandleInput(string input)
         {
-            _mediator.Notify(this, input);
+            Mediator.Send(this, input);
+        }
+
+        public override void Send(ICommand command)
+        {
+            System.Diagnostics.Debug.WriteLine(this.Name + ": Sending command.");
+        }
+
+        public override void Receive(ICommand command)
+        {
+            System.Diagnostics.Debug.WriteLine(this.Name + ": Received command.");
         }
     }
 }

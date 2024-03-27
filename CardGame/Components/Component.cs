@@ -2,23 +2,22 @@ using SamMRoberts.CardGame.Management;
 
 namespace SamMRoberts.CardGame.Components
 {
-    public class Component : IComponent
+    public abstract class Component : IComponent
     {
-        protected IMediator _mediator;
+        public IMediator Mediator { get; set; }
+        protected string Name;
 
-        public Component(IMediator mediator = null)
+        public Component(string name)
         {
-            this._mediator = mediator;
+            this.Name = name;
         }
 
-        public void Receive(object sender, string ev)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void Send(ICommand command);
+        public abstract void Receive(ICommand command);
 
         public void SetMediator(IMediator mediator)
         {
-            this._mediator = mediator;
+            this.Mediator = mediator;
         }
     }
 }
