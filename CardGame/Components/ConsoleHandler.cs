@@ -13,7 +13,6 @@ namespace SamMRoberts.CardGame.Components
             _logger = logger;
             _commands = new Dictionary<string, ICommand>();
             LoadCommands();
-            LoadExternalCommands(Games.BlackjackCommands.GetCommands());
         }
 
         public void Handle(string input)
