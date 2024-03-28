@@ -4,24 +4,12 @@ using SamMRoberts.CardGame.Cards;
 
 namespace SamMRoberts.CardGame.Games
 {
-    public static class BlackjackCommands
-    {
-        public static Dictionary<string, ICommand> GetCommands()
-        {
-            return new Dictionary<string, ICommand>
-            {
-                { "hit", new Command(() => System.Console.WriteLine("Hit!")) },
-                { "stand", new Command(() => System.Console.WriteLine("Stand!")) },
-            };
-        }
-    }
-
     public class Blackjack : Components.Component, IGame, IQueueable
     {
         public IPlayer Player { get => _player; }
         private IDeck<Card> _deck;
         private IPlayer _player;
-        private IDealer _dealer;
+        protected IDealer _dealer;
         private Components.IInteractiveConsole _console;
         private IHandler<string> _handler;
         private IDeckBuilder<Standard.Faces, Standard.Suits> _builder;
@@ -46,6 +34,7 @@ namespace SamMRoberts.CardGame.Games
 
         public void Start()
         {
+            _handler.LoadExternalCommands(GetCommands());
             _dealer.GetAndShuffle();
             InitialDeal();
             _console.WriteLine($"Player hand: {_player.Hand[0]} {_player.Hand[1]}");
@@ -108,5 +97,16 @@ namespace SamMRoberts.CardGame.Games
         {
             System.Diagnostics.Debug.WriteLine(this.Name + ": Received command.");
         }
+
+        public Dictionary<string, ICommand> GetCommands()
+        {
+            return new Dictionary<string, ICommand>
+            {
+                //{ "hit", new Command(() => System.Console.WriteLine("Hit!")) },
+                { "hit", new Command(() => this._dealer.Deal(_deck, _player, CardHolder.Visibility.FaceUp))},
+                { "stand", new Command(() => System.Console.WriteLine("Stand!")) },
+            };
+        }
+
     }
 }

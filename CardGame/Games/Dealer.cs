@@ -19,7 +19,6 @@ namespace SamMRoberts.CardGame.Games
 
         public void Deal(Cards.IDeck<Cards.Card> deck, IPlayer player, int count)
         {
-            System.Diagnostics.Debug.WriteLine($"Dealing {count} cards to {player.Name}.");
             for (int i = 0; i < count; i++)
             {
                 Deal(deck, player, Cards.CardHolder.Visibility.FaceDown);
@@ -28,8 +27,8 @@ namespace SamMRoberts.CardGame.Games
 
         public void Deal(Cards.IDeck<Cards.Card> deck, IPlayer player, Cards.CardHolder.Visibility visibility)
         {
-            System.Diagnostics.Debug.WriteLine($"Dealing a card to {player.Name}.");
             player.Hand.AddLast(new CardHolder(player, deck.GetTop(), visibility));
+            //player.Hand.Display();
         }
 
         public void Deal(Cards.IDeck<Cards.Card> deck, int count)

@@ -23,6 +23,17 @@ namespace SamMRoberts.CardGame.Cards
 
         public int Count => nextIndex;
 
+        // TODO: fix hand display method
+        public void Display()
+        {
+            IList<string> hand = new List<string>();
+            foreach (T card in cards)
+            {
+                hand.Add(card.Card.ToString());
+            }
+            System.Console.WriteLine(string.Join(", ", hand));
+        }
+
         #if _sortable
         public void AddFirst(T value)
         {
