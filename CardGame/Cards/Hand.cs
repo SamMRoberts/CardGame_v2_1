@@ -9,6 +9,18 @@ namespace SamMRoberts.CardGame.Cards
         private T[] cards;
         private int nextIndex = 0;
 
+        public Hand()
+        {
+            _sortable = false;
+            cards = new T[52];
+        }
+
+        public Hand(int maxSize = 52)
+        {
+            _sortable = false;
+            cards = new T[maxSize];
+        }
+
         public Hand(bool sortable = false, int maxSize = 52)
         {
             _sortable = sortable;
@@ -22,17 +34,6 @@ namespace SamMRoberts.CardGame.Cards
         }
 
         public int Count => nextIndex;
-
-        // TODO: fix hand display method
-        public void Display()
-        {
-            IList<string> hand = new List<string>();
-            foreach (T card in cards)
-            {
-                hand.Add(card.Card.ToString());
-            }
-            System.Console.WriteLine(string.Join(", ", hand));
-        }
 
         #if _sortable
         public void AddFirst(T value)
@@ -75,7 +76,8 @@ namespace SamMRoberts.CardGame.Cards
         {
             foreach (T card in cards)
             {
-                yield return card;
+                if (card.Visible == CardHolder.Visibility.FaceDown || card.Visible == CardHolder.Visibility.FaceUp)
+                    yield return card;
             }
         }
 

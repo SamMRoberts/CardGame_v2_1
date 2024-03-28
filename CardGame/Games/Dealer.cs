@@ -6,15 +6,20 @@ namespace SamMRoberts.CardGame.Games
     {
         public IGame Game { get; }
         public string Name { get; set; }
-        public int Score { get; set; }
         public Cards.Hand<Cards.CardHolder> Hand { get; set; }
 
         public Dealer(string name, IGame game)
         {
             Name = name;
             Game = game;
-            Score = 0;
             Hand = new();
+        }
+
+        public Dealer(string name, IGame game, int handSize)
+        {
+            Name = name;
+            Game = game;
+            Hand = new(handSize);
         }
 
         public void Deal(Cards.IDeck<Cards.Card> deck, IPlayer player, int count)
@@ -25,10 +30,17 @@ namespace SamMRoberts.CardGame.Games
             }
         }
 
+        public void Deal(Cards.IDeck<Cards.Card> deck, IPlayer player, Cards.CardHolder.Visibility visibility, bool display = true)
+        {
+            player.Hand.AddLast(new CardHolder(player, deck.GetTop(), visibility));
+            if (display)
+                player.DisplayHand();
+        }
+
         public void Deal(Cards.IDeck<Cards.Card> deck, IPlayer player, Cards.CardHolder.Visibility visibility)
         {
             player.Hand.AddLast(new CardHolder(player, deck.GetTop(), visibility));
-            //player.Hand.Display();
+            player.DisplayHand();
         }
 
         public void Deal(Cards.IDeck<Cards.Card> deck, int count)

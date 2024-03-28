@@ -2,7 +2,7 @@ using SamMRoberts.CardGame.Management;
 
 namespace SamMRoberts.CardGame.Components
 {
-    public class ConsoleHandler : Component, IHandler<string>, IQueueable
+    public class ConsoleHandler : Component, IHandler<string>
     {
         private Dictionary<string, ICommand> _commands;
         private ILogger _logger;

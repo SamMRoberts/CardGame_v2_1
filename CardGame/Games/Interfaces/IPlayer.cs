@@ -4,7 +4,10 @@ namespace SamMRoberts.CardGame.Games
     {
         IGame Game { get; }
         string Name { get; set; }
-        int Score { get; set; }
         Cards.Hand<Cards.CardHolder> Hand { get; set; }
+        void DisplayHand()
+        {
+            System.Console.WriteLine($"{this.Name} hand: {Cards.Extensions.HandExtensions.ToString(Hand)}");
+        }
     }
 }

@@ -4,15 +4,20 @@ namespace SamMRoberts.CardGame.Games
     {
         public IGame Game { get; }
         public string Name { get; set; }
-        public int Score { get; set; }
         public Cards.Hand<Cards.CardHolder> Hand { get; set; }
 
         public Player(string name, IGame game)
         {
             Name = name;
             Game = game;
-            Score = 0;
             Hand = new();
+        }
+
+        public Player(string name, IGame game, int handSize)
+        {
+            Name = name;
+            Game = game;
+            Hand = new(handSize);;
         }
     }
 }

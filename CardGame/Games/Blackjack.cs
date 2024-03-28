@@ -4,7 +4,7 @@ using SamMRoberts.CardGame.Cards;
 
 namespace SamMRoberts.CardGame.Games
 {
-    public class Blackjack : Components.Component, IGame, IQueueable
+    public class Blackjack : Components.Component, IGame
     {
         public IPlayer Player { get => _player; }
         private IDeck<Card> _deck;
@@ -20,12 +20,13 @@ namespace SamMRoberts.CardGame.Games
 
         public Blackjack(string name, Components.IInteractiveConsole console, IHandler<string> handler, IQueue queue) : base(name)
         {
+            var handSize = 14;
             Name = name;
             //Mediator.Register(this);
             _builder = new Builder<Standard.Faces, Standard.Suits>();
             _deck = _builder.BuildDeck();
-            _player = new Games.Player("Player 1", this);
-            _dealer = new Games.Dealer("Dealer", this);
+            _player = new Games.Player("Player 1", this, handSize);
+            _dealer = new Games.Dealer("Dealer", this, handSize);
             _console = console;
             _handler = handler;
             _queue = queue;
@@ -34,6 +35,7 @@ namespace SamMRoberts.CardGame.Games
 
         public void Start()
         {
+
             _handler.LoadExternalCommands(GetCommands());
             _dealer.GetAndShuffle();
             InitialDeal();
@@ -87,8 +89,8 @@ namespace SamMRoberts.CardGame.Games
 
         private void InitialDeal()
         {
-            _dealer.Deal(_deck, _player, CardHolder.Visibility.FaceUp);
-            _dealer.Deal(_deck, _dealer, CardHolder.Visibility.FaceDown);
+            _dealer.Deal(_deck, _player, CardHolder.Visibility.FaceUp, false);
+            _dealer.Deal(_deck, _dealer, CardHolder.Visibility.FaceDown, false);
             _dealer.Deal(_deck, _player, CardHolder.Visibility.FaceUp);
             _dealer.Deal(_deck, _dealer, CardHolder.Visibility.FaceUp);
         }

@@ -1,3 +1,4 @@
+using System.Collections;
 using SamMRoberts.CardGame.Games;
 
 namespace SamMRoberts.CardGame.Cards
@@ -6,9 +7,9 @@ namespace SamMRoberts.CardGame.Cards
     {
         public enum Visibility
         {
+            Hidden,
             FaceUp,
-            FaceDown,
-            Hidden
+            FaceDown
         }
         public Card Card
         {
@@ -23,7 +24,7 @@ namespace SamMRoberts.CardGame.Cards
         public Enum Suit { get => Card.Suit; }
         public char SuitSymbol { get => Card.SuitSymbol; }
         private Card _card;
-        public CardHolder(object owner, Card card, Visibility visible)
+        public CardHolder(object owner, Card card, Visibility visible = Visibility.Hidden)
         {
             Owner = owner;
             Card = card;
@@ -36,8 +37,13 @@ namespace SamMRoberts.CardGame.Cards
             {
                 return $"[{Card.FaceSymbol}{Card.SuitSymbol}]";
             }
+            else if (Visible == Visibility.FaceDown)
             {
                 return "[XX]";
+            }
+            else
+            {
+                return string.Empty;
             }
         }
     }
