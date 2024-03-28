@@ -1,66 +1,51 @@
 using SamMRoberts.CardGame.Components;
 
-namespace SamMRoberts.CardGame.Management
+namespace SamMRoberts.CardGame.Management;
+
+public class Mediator : IMediator
 {
-    public class Mediator : IMediator, IQueueable
+    private IQueue _queue;
+    private Dictionary<string, Components.IComponent> _components = [];
+    private IList<Games.IPlayer> _players = [];
+
+    //public Mediator(IQueue _queue)
+    //{
+    //    this._queue = _queue;
+    //    _components = [];
+    //}
+
+    public void Register(Components.IComponent component)
     {
-        private IQueue _queue;
-        private readonly Dictionary<string, Components.IComponent> _components = [];
-
-        //public Mediator(IQueue _queue)
-        //{
-        //    this._queue = _queue;
-        //    _components = [];
-        //}
-
-        public void Register(Components.IComponent component)
+        if (component is Games.IPlayer player)
         {
-            //_components.Add(component);
+            _players.Add(player);
+        }
+        else
+        {
             _components.Add(component.GetType().Name, component);
-            component.SetMediator(this);
         }
+        component.SetMediator(this);
+    }
 
-        public void Send0(Components.IComponent component, ICommand command)
+    public void Send(Components.IComponent component, ICommand command)
+    {
+        switch (component)
         {
-            //_queue.Enqueue(command);
-            if (component != this)
-                component.Receive(command);
+            case IHandler<string> handler:
+                _components.Values.OfType<IQueue>().ToList().ForEach(c => c.Receive(command));
+                return;
+            case IInteractiveConsole console:
+                return;
         }
+    }
 
-        public void Send0(Components.IComponent component, string ev)
+    public void Send(Components.IComponent component, string ev)
+    {
+        switch (component)
         {
-            if (component != this)
+            case IInteractiveConsole console:
                 _components.Values.OfType<IHandler<string>>().ToList().ForEach(c => c.Handle(ev));
-        }
-
-
-        public void Send(Components.IComponent component, ICommand command)
-        {
-            switch (component)
-            {
-                case IHandler<string> handler:
-                    //_components.Values.OfType<IQueue>().ToList().ForEach(c => c.Enqueue(command));
-                    _components.Values.OfType<IQueue>().ToList().ForEach(c => c.Receive(command));
-                    return;
-                case IInteractiveConsole console:
-                    return;
-            }
-            _queue.Enqueue(command);
-        }
-
-        public void Send(Components.IComponent component, string ev)
-        {
-            switch (component)
-            {
-                case IInteractiveConsole console:
-                    _components.Values.OfType<IHandler<string>>().ToList().ForEach(c => c.Handle(ev));
-                    break;
-            }
-        }
-
-        public void Send(ICommand command)
-        {
-            throw new NotImplementedException();
+                break;
         }
     }
 }
