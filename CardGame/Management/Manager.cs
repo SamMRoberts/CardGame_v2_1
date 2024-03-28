@@ -21,7 +21,7 @@ namespace SamMRoberts.CardGame.Management
             Mediator.Register(this);
             _queue = [];
             _console = CreateAndRegisterComponent<Components.Console>("Console", this);
-            Start();
+            StartBlackjack();
         }
 
         public void Enqueue(ICommand command)
@@ -29,7 +29,7 @@ namespace SamMRoberts.CardGame.Management
             _queue.Add(command);
         }
 
-        public void Start()
+        public void StartBlackjack()
         {
             _handler = CreateAndRegisterComponent<Components.ConsoleHandler>(["ConsoleHandler", this]);
             _game = CreateAndRegisterComponent<Games.Blackjack>(["Blackjack", _console, _handler, this]);
@@ -57,6 +57,8 @@ namespace SamMRoberts.CardGame.Management
             {
                 if (_queue.TryTake(out ICommand? command))
                 {
+                    if (command == null)
+                        continue;
                     Task.Factory.StartNew(() => command.Execute());
                 }
                 Thread.Sleep(100);
@@ -93,18 +95,29 @@ namespace SamMRoberts.CardGame.Management
 
         public override void Send(ICommand command)
         {
+            if (command == null)
+                return;
             System.Diagnostics.Debug.WriteLine(this.Name + ": Sending command.");
         }
 
         public override void Receive(ICommand command)
         {
-            //System.Diagnostics.Debug.WriteLine(this.Name + ": Received command.");
+            if (command == null)
+                return;
             Enqueue(command);
         }
 
         private T CreateAndRegisterComponent<T>(params object[] args) where T : Component
         {
-            T component = (T)Activator.CreateInstance(typeof(T), args);
+            T component;
+            if (args.All(arg => arg != null))
+            {
+                component = (T)Activator.CreateInstance(typeof(T), args)!;
+            }
+            else
+            {
+                throw new ArgumentNullException("args", "One or more arguments are null.");
+            }
 
             Mediator.Register(component);
             return component;
