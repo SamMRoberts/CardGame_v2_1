@@ -1,25 +1,26 @@
 using System.Reflection;
 using System.Windows.Input;
 
-namespace SamMRoberts.CardGame.Management
+namespace SamMRoberts.CardGame.Management;
+
+public class Command : ICommand
 {
-    public class Command : ICommand
+    private readonly Action task;
+
+    public Command(Action task)
     {
-        private readonly Action task;
-        public Action Action => task;
-        public Command(Action task)
-        {
-            this.task = task;
-        }
+        this.task = task;
+    }
 
-        public async void Execute()
-        {
-            await Task.Run(task);
-        }
+    public Action Action => task;
 
-        public override string ToString()
-        {
-            return task.Target.ToString() + "." + task.GetMethodInfo().Name;
-        }
+    public async void Execute()
+    {
+        await Task.Run(task);
+    }
+
+    public override string ToString()
+    {
+        return task.Target.ToString() + "." + task.GetMethodInfo().Name;
     }
 }
